@@ -26,7 +26,7 @@ class Roulette extends Component {
     });
   }
 
-  triggerSpin(spinToIndex) {
+  triggerSpin(spinToIndex = this.props.spinToIndex) {
     const { options, turns, onRotate, onRotateChange, duration, easing } = this.props;
     const { activeItem } = this.state;
     const randomSelected = Math.floor(Math.random() * options.length);
@@ -37,19 +37,19 @@ class Roulette extends Component {
     this.state._animatedValue.setValue(activeItem);
     let animation = Animated.timing(this.state._animatedValue, { toValue: nextItem, easing, duration })
     onRotateChange("start");
-    animation.start(()=>{
+    animation.start(() => {
       onRotateChange("stop");
     });
 
-    let newActiveItem = nextItem > options.length ? (nextItem % options.length)  : nextItem;
-    if(newActiveItem == 0){
+    let newActiveItem = nextItem > options.length ? (nextItem % options.length) : nextItem;
+    if (newActiveItem == 0) {
       newActiveItem = options.length
     }
     this.setState({ activeItem: newActiveItem }, () => onRotate(options[options.length - newActiveItem]));
   }
 
   render() {
-    const { options, radius, distance, customStyle, rouletteRotate, background, marker,centerImage, markerWidth,markerTop,centerWidth,centerTop,markerStyle, centerStyle, rotateEachElement } = this.props;
+    const { options, radius, distance, customStyle, rouletteRotate, background, marker, centerImage, markerWidth, markerTop, centerWidth, centerTop, markerStyle, centerStyle, rotateEachElement } = this.props;
 
     const interpolatedRotateAnimation = this.state._animatedValue.interpolate({
       inputRange: [0, options.length],
@@ -70,24 +70,24 @@ class Roulette extends Component {
             customStyle
           ]}
         >
-          <ImageBackground width={radius} height={radius} style={{width:radius, height: radius, zIndex:100}} source={background}>
-          {displayOptions && Children.map(options, (child, index) =>
+          <ImageBackground width={radius} height={radius} style={{ width: radius, height: radius, zIndex: 100 }} source={background}>
+            {displayOptions && Children.map(options, (child, index) =>
               <RouletteItem
                 item={child}
                 index={index}
                 radius={radius}
                 step={this.step}
                 distance={distance}
-                rouletteRotate={ rotateEachElement(index) }
+                rouletteRotate={rotateEachElement(index)}
               />
-          )}
+            )}
           </ImageBackground>
 
         </Animated.View>
-        <Image source={marker} resizeMode="contain" style={[styles.marker,{zIndex:9999,top: markerTop, width:markerWidth, left: (radius/2) -(markerWidth/2)}, markerStyle ]}/>
+        <Image source={marker} resizeMode="contain" style={[styles.marker, { zIndex: 9999, top: markerTop, width: markerWidth, left: (radius / 2) - (markerWidth / 2) }, markerStyle]} />
 
         {centerImage &&
-          <Image source={centerImage} resizeMode="contain" style={[styles.marker,{zIndex:9999,top: centerTop, width:centerWidth, left: (radius/2) -(centerWidth/2) },centerStyle ]}/>
+          <Image source={centerImage} resizeMode="contain" style={[styles.marker, { zIndex: 9999, top: centerTop, width: centerWidth, left: (radius / 2) - (centerWidth / 2) }, centerStyle]} />
         }
       </View>
     );
@@ -107,7 +107,8 @@ Roulette.propTypes = {
   background: PropTypes.any,
   turns: PropTypes.number,
   duration: PropTypes.number,
-  easing: PropTypes.any
+  easing: PropTypes.any,
+  spinToIndex: PropTypes.number
 };
 
 Roulette.defaultProps = {
@@ -118,16 +119,17 @@ Roulette.defaultProps = {
   background: null,
   turns: 4,
   rotateEachElement: (index) => 0,
-  onRotate: () => {},
-  onRotateChange: () => {},
+  onRotate: () => { },
+  onRotateChange: () => { },
   duration: 3500,
   easing: Easing.inOut(Easing.ease),
   markerTop: 0,
-  markerWidth:20,
-  centerWidth:20,
+  markerWidth: 20,
+  centerWidth: 20,
   centerTop: 0,
   centerImage: null,
-  markerStyle: {}
+  markerStyle: {},
+  // spinToIndex: 0
 };
 
 export default Roulette;
